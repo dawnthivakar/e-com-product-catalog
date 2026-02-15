@@ -1,0 +1,394 @@
+{
+  "info": {
+    "_postman_id": "1987a6af-4b7d-480d-bdad-b74505bac597",
+    "name": "e-commerce",
+    "description": "Complete API collection for E-Commerce Product Catalog and User Auth services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21501414"
+  },
+  "item": [
+    {
+      "name": "User Auth Service",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Register User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8081/api/auth/register",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                },
+                "description": "Register a new user account"
+              },
+              "response": []
+            },
+            {
+              "name": "Login User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.collectionVariables.set('jwt_token', jsonData.token);",
+                      "    console.log('JWT Token saved: ' + jsonData.token);",
+                      "} else {",
+                      "    console.log('Login failed. Status: ' + pm.response.code);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"vilgax\",\n  \"password\": \"AdminPassword123!\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8081/api/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Authenticate user and retrieve JWT token"
+              },
+              "response": []
+            },
+            {
+              "name": "Create User with Role",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"vilgax\",\n  \"email\": \"vilgax@gmail.com\",\n  \"password\": \"AdminPassword123!\",\n  \"role\": \"ROLE_ADMIN\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8081/api/auth/create-user-with-role",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "auth",
+                    "create-user-with-role"
+                  ]
+                },
+                "description": "Create a new user with a specific role (ADMIN only). Available roles: ROLE_ADMIN, ROLE_USER"
+              },
+              "response": []
+            }
+          ],
+          "description": "Authentication endpoints"
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8081/api/users/1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "users",
+                    "1"
+                  ]
+                },
+                "description": "Retrieve user details by user ID"
+              },
+              "response": []
+            }
+          ],
+          "description": "User management endpoints"
+        }
+      ],
+      "description": "User Authentication and Management APIs (Port 8081)"
+    },
+    {
+      "name": "Product Catalog Service",
+      "item": [
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "Get All Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/products",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                },
+                "description": "Retrieve a list of all available products"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/products/4",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "products",
+                    "4"
+                  ]
+                },
+                "description": "Retrieve a specific product by its ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Product",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"nokia\",\n  \"description\": \"High quality Mobile\",\n  \"price\": 249.99,\n  \"quantity\": 500,\n  \"category\": \"Mobile\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/products",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                },
+                "description": "Create a new product (ADMIN only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Product",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Wireless Headphones Pro\",\n  \"description\": \"Premium wireless headphones with enhanced noise cancellation\",\n  \"price\": 149.99,\n  \"quantity\": 45,\n  \"category\": \"Headphones\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/products/4",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "products",
+                    "4"
+                  ]
+                },
+                "description": "Update an existing product (ADMIN only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Product",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/products/7",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "products",
+                    "7"
+                  ]
+                },
+                "description": "Delete a product by its ID (ADMIN only)"
+              },
+              "response": []
+            }
+          ],
+          "description": "Product management endpoints"
+        },
+        {
+          "name": "Reviews",
+          "item": [
+            {
+              "name": "Get Reviews by Product ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/reviews/product/1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "reviews",
+                    "product",
+                    "1"
+                  ]
+                },
+                "description": "Retrieve all reviews for a specific product"
+              },
+              "response": []
+            },
+            {
+              "name": "Add Review",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": 4,\n  \"userId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Excellent product! Very satisfied with the purchase.\",\n  \"reviewDate\": \"2026-02-15T22:59:59\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/reviews",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "reviews"
+                  ]
+                },
+                "description": "Add a new review for a product (USER or ADMIN only)"
+              },
+              "response": []
+            }
+          ],
+          "description": "Review management endpoints"
+        }
+      ],
+      "description": "Product and Review Management APIs (Port 8080)"
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "your_jwt_token_here",
+      "type": "string",
+      "description": "JWT token obtained from login endpoint"
+    }
+  ]
+}

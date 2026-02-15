@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +27,7 @@ public class ReiewController {
 
     @Operation(summary = "Get reviews by product ID", description = "Retrieve all reviews for a specific product")
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Review>> getReviewsByProductId(Long productId) {
+    public ResponseEntity<List<Review>> getReviewsByProductId(@PathVariable Long productId) {
         List<Review> reviews = reviewService.getReviewsByProductId(productId);
         return ResponseEntity.ok(reviews);
     }
@@ -35,7 +37,7 @@ public class ReiewController {
             security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Review> addReview(Review review) {
+    public ResponseEntity<Review> addReview(@RequestBody Review review) {
         Review createdReview = reviewService.addReview(review);
         return ResponseEntity.ok(createdReview);
     }

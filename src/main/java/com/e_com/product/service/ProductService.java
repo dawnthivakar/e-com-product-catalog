@@ -28,6 +28,11 @@ public class ProductService {
 
     @CachePut(value = "products", key = "#result.id")
     public Product createProduct(Product product) {
+        // Check if product with same name already exists
+        Optional<Product> existingProduct = productRepository.findByName(product.getName());
+        if (existingProduct.isPresent()) {
+            throw new IllegalArgumentException("Product with name '" + product.getName() + "' has already been created");
+        }
         return productRepository.save(product);
     }
 

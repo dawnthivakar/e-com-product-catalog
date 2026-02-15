@@ -1,5 +1,6 @@
 package com.e_com.product.controller;
 
+import com.e_com.product.model.ErrorResponse;
 import com.e_com.product.model.Product;
 import com.e_com.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,15 +37,19 @@ public class ProductController {
 
     @Operation(summary = "Create Product", description = "Create a new product")
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // Only users with the ADMIN role can create products
-    public ResponseEntity<Product> createProduct(Product product) {
-        Product createdProduct = productService.createProduct(product);
-        return ResponseEntity.status(201).body(createdProduct);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+        try {
+            Product createdProduct = productService.createProduct(product);
+            return ResponseEntity.status(201).body(createdProduct);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(new ErrorResponse("CONFLICT", e.getMessage()));
+        }
     }
 
     @Operation(summary = "Update Product", description = "Update an existing product")
     @PutMapping("/{productId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // Only users with the ADMIN role can update products
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product) {
         Product updatedProduct = productService.updateProduct(productId, product);
         return updatedProduct != null
@@ -54,7 +59,7 @@ public class ProductController {
 
     @Operation(summary = "Delete Product", description = "Delete a product by its ID")
     @DeleteMapping("/{productId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // Only users with the ADMIN role can delete products
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();

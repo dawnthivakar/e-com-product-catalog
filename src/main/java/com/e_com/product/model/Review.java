@@ -1,5 +1,6 @@
 package com.e_com.product.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Id;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,5 +17,6 @@ public class Review {
     private Long userId;
     private String comment;
     private Integer rating;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime reviewDate;
 }

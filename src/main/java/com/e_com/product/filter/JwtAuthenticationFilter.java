@@ -49,8 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication");
-            throw new ServletException("Invalid JWT token", e);
+            logger.error("Cannot set user authentication: {}");
+            // Don't throw exception, just continue with no authentication
+            // Spring Security will handle the unauthorized access
         }
 
         filterChain.doFilter(request, response);

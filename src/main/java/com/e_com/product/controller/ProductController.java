@@ -50,11 +50,13 @@ public class ProductController {
     @Operation(summary = "Update Product", description = "Update an existing product")
     @PutMapping("/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(productId, product);
-        return updatedProduct != null
-                ? ResponseEntity.ok(updatedProduct)
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateProduct(@PathVariable Long productId, @RequestBody Product product) {
+        try {
+            Product updatedProduct = productService.updateProduct(productId, product);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(new ErrorResponse("NOT_FOUND", e.getMessage()));
+        }
     }
 
     @Operation(summary = "Delete Product", description = "Delete a product by its ID")

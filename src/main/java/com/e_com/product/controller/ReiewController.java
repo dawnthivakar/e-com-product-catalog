@@ -1,5 +1,6 @@
 package com.e_com.product.controller;
 
+import com.e_com.product.model.ErrorResponse;
 import com.e_com.product.model.Review;
 import com.e_com.product.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,9 +37,13 @@ public class ReiewController {
             description = "Create a new review for a product",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Review> addReview(@RequestBody Review review) {
-        Review createdReview = reviewService.addReview(review);
-        return ResponseEntity.ok(createdReview);
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<?> addReview(@RequestBody Review review) {
+        try {
+            Review createdReview = reviewService.addReview(review);
+            return ResponseEntity.ok(createdReview);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(new ErrorResponse("NOT_FOUND", e.getMessage()));
+        }
     }
 }

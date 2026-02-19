@@ -26,11 +26,42 @@ public class ReviewService {
     }
 
     public Review addReview(Review review) {
+        UserServiceClient.UserDto user;
         try {
-            userServiceClient.getUserById(review.getUserId());
+            user = userServiceClient.getUserById(review.getUserId());
+
+            // Check if fallback was triggered (user service is down)
+            if (user.getId() != null && user.getId() == -1L) {
+                throw new IllegalStateException(
+                        "User verification service is temporarily unavailable. " +
+                        "Unable to process your review at this time. Please try again later."
+                );
+            }
+
+            // Check if user doesn't exist (null ID or doesn't match)
+            if (user.getId() == null) {
+                throw new IllegalArgumentException(
+                        "You are not registered with us. Please register to add a review."
+                );
+            }
+
+            // Verify the user ID matches
+            if (!user.getId().equals(review.getUserId())) {
+                throw new IllegalArgumentException(
+                        "User verification failed. The user ID does not match our records."
+                );
+            }
+
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            // Re-throw our custom exceptions as-is
+            throw e;
         } catch (Exception e) {
-            throw new IllegalArgumentException("User not found with ID: " + review.getUserId(), e);
+            // Handle unexpected errors (network issues, timeouts, etc.)
+            throw new IllegalStateException(
+                    "Unable to verify user registration due to a technical error. Please try again later.", e
+            );
         }
+
         review.setReviewDate(LocalDateTime.now());
         Review savedReview = reviewRepository.save(review);
 

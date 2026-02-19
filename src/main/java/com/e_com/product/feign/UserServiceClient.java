@@ -6,9 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// TODO: Try to add Service Discovery with Eureka or Consul
-// The name of the Feign client is "user-service" and it will use the URL specified in the application properties file under "user.service.url"
-@FeignClient(name = "user-service", url = "${user.service.url}", configuration = FeignConfig.class)
+@FeignClient(name = "user-service", configuration = FeignConfig.class, fallback = UserServiceClientFallback.class)
 public interface UserServiceClient {
 
     @GetMapping("/api/users/{userId}")
